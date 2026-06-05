@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phone Pop Grader — Toyota of San Bernardino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F172A;
+    --card:#1E293B;
+    --card-border:rgba(255,255,255,.07);
+    --line:rgba(255,255,255,.12);
+    --text:#E2E8F0;
+    --muted:#94A3B8;
+    --dim:#64748B;
+    --red:#EB0A1E;
+    --green:#4ADE80;
+    --blue:#38BDF8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',Arial,sans-serif;min-height:100vh;padding-bottom:80px}
+
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--card-border);background:rgba(0,0,0,.25)}
+  .topbar img{height:38px}
+  .topbar .tb-text{font-size:.8rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px}
+
+  .hero{text-align:center;margin-bottom:26px}
+  .hero img{height:54px;margin-bottom:12px}
+  .hero h1{font-family:'Orbitron',sans-serif;font-weight:800;font-size:clamp(1.5rem,4.5vw,2.1rem);color:var(--red);letter-spacing:.05em;text-transform:uppercase}
+  .hero .sub{color:var(--muted);font-size:.85rem;margin-top:6px;letter-spacing:.12em;text-transform:uppercase}
+
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:14px;margin-bottom:18px;overflow:hidden}
+  .card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--card-border)}
+  .card-head .ttl{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.08em;text-transform:uppercase}
+  .card-body{padding:16px 18px}
+
+  .score-pill{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+  .score-pill .lab{font-size:.65rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .score-pill .val{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1rem;color:var(--blue)}
+
+  .date-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .date-row label{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  input[type=date]{background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.9rem;color-scheme:dark}
+
+  .pop-row{padding:12px 0;border-bottom:1px solid var(--card-border)}
+  .pop-row:last-of-type{border-bottom:none}
+  .pop-top{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+  .pop-num{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;color:var(--muted);white-space:nowrap;min-width:64px}
+  .pop-row.graded-pass .pop-num{color:var(--green)}
+  .pop-row.graded-fail .pop-num{color:var(--red)}
+
+  .pop-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .pop-details input{width:100%;background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.88rem}
+  .pop-details input:focus{outline:none;border-color:var(--blue)}
+  .pop-details input::placeholder{color:var(--dim)}
+
+  .pop-notes{width:100%;margin-top:10px;background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.88rem;resize:vertical;min-height:42px}
+  .pop-notes:focus{outline:none;border-color:var(--blue)}
+  .pop-notes::placeholder{color:var(--dim)}
+
+  .audio-zone{margin-top:10px;border:1.5px dashed var(--line);border-radius:8px;padding:10px 12px;font-size:.78rem;color:var(--dim);cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s}
+  .audio-zone:hover,.audio-zone.dragover{border-color:var(--blue);color:var(--blue);background:rgba(56,189,248,.06)}
+  .audio-loaded{margin-top:10px;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px}
+  .audio-loaded audio{flex:1;height:34px;min-width:0}
+  .audio-loaded .a-name{font-size:.7rem;color:var(--muted);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .audio-loaded .a-x{background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:6px;width:26px;height:26px;cursor:pointer;flex-shrink:0;font-size:.75rem}
+  .audio-loaded .a-x:hover{border-color:var(--red);color:var(--red)}
+
+  .salesperson-select{width:100%;background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.88rem;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%2364748B'/></svg>");background-repeat:no-repeat;background-position:right 12px center}
+  .salesperson-select:focus{outline:none;border-color:var(--blue)}
+
+  .pf{display:flex;gap:6px}
+  .pf button{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:8px 13px;font-family:'Inter',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.05em;cursor:pointer;transition:all .15s}
+  .pf button:hover{border-color:var(--muted);color:var(--text)}
+  .pf button.pass.on{background:rgba(74,222,128,.15);border-color:var(--green);color:var(--green)}
+  .pf button.fail.on{background:rgba(235,10,30,.15);border-color:var(--red);color:var(--red)}
+
+  .row-actions{display:flex;gap:10px;margin-top:14px}
+  .btn-ghost{flex:1;background:transparent;border:1.5px dashed var(--line);color:var(--muted);border-radius:8px;padding:10px;font-family:'Inter',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .15s}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+
+  .gauge-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .gauge{position:relative;width:130px;height:130px;flex-shrink:0}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .pct .n{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem}
+  .gauge .pct .l{font-size:.55rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .stat-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;min-width:240px}
+  .stat{background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:10px;padding:12px;text-align:center}
+  .stat .v{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.3rem}
+  .stat .k{font-size:.6rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-top:4px}
+  .stat.pass .v{color:var(--green)}
+  .stat.fail .v{color:var(--red)}
+  .stat.total .v{color:var(--blue)}
+
+  .build-btn{display:block;width:100%;max-width:760px;margin:6px auto 0;background:linear-gradient(180deg,#ff1a30,var(--red));color:#fff;border:none;border-radius:12px;padding:16px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 24px rgba(235,10,30,.35);transition:transform .15s}
+  .build-btn:hover{transform:translateY(-2px)}
+
+  #report-card{display:none}
+  #report-pre{background:rgba(0,0,0,.35);border:1px solid var(--card-border);border-radius:10px;padding:16px;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;line-height:1.65;white-space:pre-wrap;color:var(--text)}
+  .copy-btn{margin-top:12px;background:transparent;border:1.5px solid var(--blue);color:var(--blue);border-radius:8px;padding:10px 18px;font-weight:700;font-size:.8rem;cursor:pointer;letter-spacing:.05em}
+  .copy-btn:hover{background:rgba(56,189,248,.12)}
+
+  .sp-line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--card-border);font-size:.88rem}
+  .sp-line:last-child{border-bottom:none}
+  .sp-line .marks{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.2em}
+
+  @media(max-width:560px){
+    .pop-top{grid-template-columns:1fr;gap:8px}
+    .pf{justify-content:flex-start}
+    .stat-grid{grid-template-columns:repeat(3,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="https://tsb.virtualautomotiv.com/images/tsb-online-logo.png" alt="TSB Online">
+  <span class="tb-text">Toyota of San Bernardino Sales Portal</span>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <img src="https://tsb.virtualautomotiv.com/images/tsb-online-logo.png" alt="TSB Online">
+    <h1>Phone Pop Grader</h1>
+    <div class="sub">Mini Grader · Toyota of San Bernardino</div>
+  </div>
+
+  <!-- Date -->
+  <div class="card">
+    <div class="card-head"><span class="ttl">📅 Report Date</span></div>
+    <div class="card-body">
+      <div class="date-row">
+        <label for="grade-date">Date</label>
+        <input type="date" id="grade-date">
+      </div>
+    </div>
+  </div>
+
+  <!-- Grading -->
+  <div class="card">
+    <div class="card-head">
+      <span class="ttl">📞 Phone Pops</span>
+      <div class="score-pill"><span class="lab">Score</span><span class="val" id="score-display">— / 5</span></div>
+    </div>
+    <div class="card-body">
+      <div id="pop-rows"></div>
+      <div class="row-actions">
+        <button class="btn-ghost" onclick="addRow()">＋ Add Phone Pop</button>
+        <button class="btn-ghost" onclick="resetAll()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live results -->
+  <div class="card">
+    <div class="card-head"><span class="ttl">📊 Results</span></div>
+    <div class="card-body">
+      <div class="gauge-wrap">
+        <div class="gauge">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="56" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="10"/>
+            <circle id="gauge-arc" cx="65" cy="65" r="56" fill="none" stroke="#38BDF8" stroke-width="10"
+              stroke-linecap="round" stroke-dasharray="351.86" stroke-dashoffset="351.86" style="transition:stroke-dashoffset .5s,stroke .5s"/>
+          </svg>
+          <div class="pct"><span class="n" id="gauge-pct">—</span><span class="l">Pass Rate</span></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat pass"><div class="v" id="stat-pass">0</div><div class="k">Passed</div></div>
+          <div class="stat fail"><div class="v" id="stat-fail">0</div><div class="k">Failed</div></div>
+          <div class="stat total"><div class="v" id="stat-total">0</div><div class="k">Graded</div></div>
+        </div>
+      </div>
+      <div id="by-person" style="margin-top:18px"></div>
+    </div>
+  </div>
+
+  <!-- Report output -->
+  <div class="card" id="report-card">
+    <div class="card-head"><span class="ttl">📋 Phone Pop Report</span></div>
+    <div class="card-body">
+      <pre id="report-pre"></pre>
+      <button class="copy-btn" onclick="copyReport()">⧉ Copy Report</button>
+    </div>
+  </div>
+
+  <button class="build-btn" onclick="buildReport()">🏁 Build Phone Pop Report</button>
+
+</div>
+
+<script>
+const ROSTER = ["Alex Enriquez","Alex Hernandez","Alexis Rojas","Allan Valladares","Alma Macias","Andrew Zuniga","Anthony Woods","Beatrice Garcia","Briana Galvan","Brianna Uruza","Brittney Sanchez","Carmen Montano","Charity Maldonado","Christopher Ortega","Christy Lesko","Citlaly Valencia","Cynthia Ramirez","Diana Valencia","Diego Ramirez Jr","Don Rhodes","Eduardo Somoza","Emily Murguia","Francisco Valencia","Frankie Macias","Gerald Tillis","Irvin Solis","Isaac Garcia","Issa Tafish","Jaime Godoy","Jaime Pereda-ojeda","Jerry Solis","Jesus Guerrero","Joel Chavez","Johana Viramontes","Jorge Escalante Pina","Joseph Rojas","Juan Rubiano","Karina Villarreal","Kaylee Ellis","Kevin Pham","Liz Enright","Luis Padilla","Marcos Alonzo","Maritza Madera","Marla Green","Martin Reyes","Maximiliano Vilarino","Maximo Adan Cruz","Melanie Romero","Melissa Aragon","Melody Hidalgo","Michael Cummings","Miguel Espino","Miguel Reyes","Mimi Zoila","Nabeel Ahmed","Nadia Sabir","Nancy Gildo","Natalie Ramos","Neysa Medina","Pat Boos","Rabi Barakzai","Raul Salcedo","Ray Zoila","Ricardo Ramirez","Ronald Guerrero","Roxana Gomes","Ryan Dimaria","Santa Ramirez","Sara Grinnan","Stacy Ferrusquiashider","Timothy Timmsen","Tuan Lam","Vivian Guerrero","William Paek","Yadira Jimenez"];
+
+let rows = []; // {result: 'pass'|'fail'|null, person: '', audio: {url,name}|null}
+const CIRC = 351.86;
+
+document.getElementById('grade-date').valueAsDate = new Date();
+
+function addRow(){
+  rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', audio:null});
+  const host = document.getElementById('pop-rows');
+  host.appendChild(makeRow(rows.length-1));
+  refreshStats();
+}
+
+function setResult(i, val){
+  rows[i].result = (rows[i].result === val) ? null : val;
+  // update in place so a playing call isn't interrupted
+  const row = document.getElementById('pop-rows').children[i];
+  row.className = 'pop-row' + (rows[i].result==='pass'?' graded-pass':rows[i].result==='fail'?' graded-fail':'');
+  row.querySelector('.pass').classList.toggle('on', rows[i].result==='pass');
+  row.querySelector('.fail').classList.toggle('on', rows[i].result==='fail');
+  refreshStats();
+}
+
+function setPerson(i, name){
+  rows[i].person = name;
+  refreshStats();
+}
+
+function setAudio(i, file){
+  if(!file) return;
+  if(!file.type.startsWith('audio') && !/\.(mp3|wav|m4a|ogg|aac)$/i.test(file.name)){
+    alert('Drop an audio file (MP3 / WAV / M4A) from Car Wars.');
+    return;
+  }
+  if(rows[i].audio) URL.revokeObjectURL(rows[i].audio.url);
+  rows[i].audio = {url: URL.createObjectURL(file), name: file.name};
+  refreshAudio(i);
+}
+
+function clearAudio(i){
+  if(rows[i].audio) URL.revokeObjectURL(rows[i].audio.url);
+  rows[i].audio = null;
+  refreshAudio(i);
+}
+
+function refreshAudio(i){
+  const row = document.getElementById('pop-rows').children[i];
+  const old = row.querySelector('.audio-zone, .audio-loaded');
+  if(old) old.remove();
+  row.appendChild(makeAudioEl(i));
+}
+
+function makeAudioEl(i){
+  const r = rows[i];
+  if(r.audio){
+    const box = document.createElement('div');
+    box.className = 'audio-loaded';
+    const au = document.createElement('audio');
+    au.controls = true; au.preload = 'metadata'; au.src = r.audio.url;
+    const nm = document.createElement('span');
+    nm.className = 'a-name'; nm.textContent = r.audio.name; nm.title = r.audio.name;
+    const x = document.createElement('button');
+    x.className = 'a-x'; x.textContent = '✕'; x.title = 'Remove recording';
+    x.onclick = ()=>clearAudio(i);
+    box.append(au, nm, x);
+    return box;
+  }
+  const zone = document.createElement('div');
+  zone.className = 'audio-zone';
+  zone.innerHTML = '🎧 <span>Drop Car Wars call here · or click to browse</span>';
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'audio/*,.mp3,.wav,.m4a,.ogg,.aac'; inp.style.display = 'none';
+  inp.onchange = e=>setAudio(i, e.target.files[0]);
+  zone.appendChild(inp);
+  zone.onclick = ()=>inp.click();
+  zone.ondragover = e=>{e.preventDefault(); zone.classList.add('dragover');};
+  zone.ondragleave = ()=>zone.classList.remove('dragover');
+  zone.ondrop = e=>{e.preventDefault(); zone.classList.remove('dragover'); setAudio(i, e.dataTransfer.files[0]);};
+  return zone;
+}
+
+function resetAll(){
+  if(!confirm('Reset all phone pops?')) return;
+  rows.forEach(r=>{ if(r.audio) URL.revokeObjectURL(r.audio.url); });
+  rows = [];
+  for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', audio:null});
+  document.getElementById('report-card').style.display='none';
+  render();
+}
+
+function makeRow(i){
+  const r = rows[i];
+  const div = document.createElement('div');
+  div.className = 'pop-row' + (r.result==='pass'?' graded-pass':r.result==='fail'?' graded-fail':'');
+  const top = document.createElement('div');
+  top.className = 'pop-top';
+  const num = document.createElement('div');
+  num.className='pop-num'; num.textContent = '📞 #'+(i+1);
+  const sel = document.createElement('select');
+  sel.className='salesperson-select';
+  sel.innerHTML = '<option value="">— Select Salesperson —</option>' + ROSTER.map(n=>`<option${n===r.person?' selected':''}>${n}</option>`).join('');
+  sel.onchange = e=>setPerson(i, e.target.value);
+  const pf = document.createElement('div');
+  pf.className='pf';
+  const bp = document.createElement('button');
+  bp.className='pass'+(r.result==='pass'?' on':''); bp.textContent='✓ PASS'; bp.onclick=()=>setResult(i,'pass');
+  const bf = document.createElement('button');
+  bf.className='fail'+(r.result==='fail'?' on':''); bf.textContent='✗ FAIL'; bf.onclick=()=>setResult(i,'fail');
+  pf.append(bp,bf);
+  top.append(num, sel, pf);
+  const det = document.createElement('div');
+  det.className = 'pop-details';
+  const cust = document.createElement('input');
+  cust.type='text'; cust.placeholder='Customer Name'; cust.value=r.customer||'';
+  cust.oninput = e=>{rows[i].customer = e.target.value;};
+  const veh = document.createElement('input');
+  veh.type='text'; veh.placeholder='Vehicle (Year / Model)'; veh.value=r.vehicle||'';
+  veh.oninput = e=>{rows[i].vehicle = e.target.value;};
+  det.append(cust, veh);
+  const notes = document.createElement('textarea');
+  notes.className = 'pop-notes';
+  notes.placeholder = '📝 Notes — what went right / wrong, coaching points…';
+  notes.rows = 1;
+  notes.value = r.notes||'';
+  notes.oninput = e=>{rows[i].notes = e.target.value;};
+  div.append(top, det, notes, makeAudioEl(i));
+  return div;
+}
+
+function render(){
+  const host = document.getElementById('pop-rows');
+  host.innerHTML = '';
+  rows.forEach((r,i)=>host.appendChild(makeRow(i)));
+  refreshStats();
+}
+
+function refreshStats(){
+  const graded = rows.filter(r=>r.result);
+  const pass = graded.filter(r=>r.result==='pass').length;
+  const fail = graded.length - pass;
+  document.getElementById('stat-pass').textContent = pass;
+  document.getElementById('stat-fail').textContent = fail;
+  document.getElementById('stat-total').textContent = graded.length;
+  document.getElementById('score-display').textContent = (graded.length? pass : '—') + ' / ' + rows.length;
+
+  const pct = graded.length ? Math.round(pass/graded.length*100) : null;
+  const arc = document.getElementById('gauge-arc');
+  const lbl = document.getElementById('gauge-pct');
+  if(pct===null){ arc.style.strokeDashoffset = CIRC; lbl.textContent='—'; lbl.style.color='var(--dim)'; }
+  else{
+    arc.style.strokeDashoffset = CIRC * (1 - pct/100);
+    const col = pct>=80 ? '#4ADE80' : pct>=50 ? '#38BDF8' : '#EB0A1E';
+    arc.style.stroke = col;
+    lbl.textContent = pct+'%';
+    lbl.style.color = col;
+  }
+
+  // per-salesperson breakdown
+  const byP = {};
+  rows.forEach(r=>{
+    if(!r.result || !r.person) return;
+    byP[r.person] = byP[r.person] || {pass:0,fail:0};
+    byP[r.person][r.result]++;
+  });
+  const host = document.getElementById('by-person');
+  const names = Object.keys(byP).sort((a,b)=> (byP[b].pass-byP[b].fail) - (byP[a].pass-byP[a].fail));
+  host.innerHTML = names.length
+    ? '<div style="font-size:.65rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:6px">By Salesperson</div>' +
+      names.map(n=>{
+        const s = byP[n];
+        const marks = '<span style="color:var(--green)">'+'✓'.repeat(s.pass)+'</span><span style="color:var(--red)">'+'✗'.repeat(s.fail)+'</span>';
+        return `<div class="sp-line"><span>${n}</span><span class="marks">${marks}</span></div>`;
+      }).join('')
+    : '';
+}
+
+function buildReport(){
+  const graded = rows.filter(r=>r.result);
+  const pass = graded.filter(r=>r.result==='pass').length;
+  const pct = graded.length ? Math.round(pass/graded.length*100) : 0;
+  const d = document.getElementById('grade-date').value || new Date().toISOString().slice(0,10);
+  const dateStr = new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  let lines = [];
+  lines.push('📞 PHONE POP GRADER — TOYOTA OF SAN BERNARDINO');
+  lines.push('📅 ' + dateStr);
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push(`SCORE: ${pass} / ${graded.length} graded  (${pct}% pass rate)`);
+  lines.push('');
+  rows.forEach((r,i)=>{
+    if(!r.result) return;
+    const icon = r.result==='pass' ? '✓ PASS' : '✗ FAIL';
+    const extras = [r.customer && '👤 ' + r.customer, r.vehicle && '🚗 ' + r.vehicle, r.audio && '🎧 ' + r.audio.name].filter(Boolean);
+    lines.push(`#${i+1}  ${icon}  — ${r.person || 'Unassigned'}${extras.length ? '\n     ' + extras.join('  ·  ') : ''}${r.notes ? '\n     📝 ' + r.notes : ''}`);
+  });
+  const byP = {};
+  rows.forEach(r=>{ if(r.result && r.person){ byP[r.person]=byP[r.person]||{p:0,f:0}; r.result==='pass'?byP[r.person].p++:byP[r.person].f++; } });
+  if(Object.keys(byP).length){
+    lines.push('');
+    lines.push('BY SALESPERSON:');
+    Object.keys(byP).sort().forEach(n=>lines.push(`  ${n}: ${byP[n].p} pass / ${byP[n].f} fail`));
+  }
+  lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  lines.push(pct>=80 ? '🏆 Strong phone performance — keep it rolling!' : pct>=50 ? '📈 Room to grow — review missed calls.' : '🔧 Coaching opportunity — schedule call reviews.');
+
+  document.getElementById('report-pre').textContent = lines.join('\n');
+  document.getElementById('report-card').style.display='block';
+  if(document.getElementById('report-card').scrollIntoView) document.getElementById('report-card').scrollIntoView({behavior:'smooth'});
+}
+
+function copyReport(){
+  navigator.clipboard.writeText(document.getElementById('report-pre').textContent).then(()=>{
+    const b = document.querySelector('.copy-btn');
+    b.textContent='✓ Copied!';
+    setTimeout(()=>b.textContent='⧉ Copy Report',1500);
+  });
+}
+
+for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', audio:null});
+render();
+</script>
+</body>
+</html>
