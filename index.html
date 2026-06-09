@@ -202,7 +202,7 @@ const CIRC = 351.86;
 document.getElementById('grade-date').valueAsDate = new Date();
 
 function addRow(){
-  rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', audio:null});
+  rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null});
   const host = document.getElementById('pop-rows');
   host.appendChild(makeRow(rows.length-1));
   refreshStats();
@@ -280,7 +280,7 @@ function resetAll(){
   if(!confirm('Reset all phone pops?')) return;
   rows.forEach(r=>{ if(r.audio) URL.revokeObjectURL(r.audio.url); });
   rows = [];
-  for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', audio:null});
+  for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null});
   document.getElementById('report-card').style.display='none';
   render();
 }
@@ -313,7 +313,7 @@ function makeRow(i){
   const veh = document.createElement('input');
   veh.type='text'; veh.placeholder='Vehicle (Year / Model)'; veh.value=r.vehicle||'';
   veh.oninput = e=>{rows[i].vehicle = e.target.value;};
-  det.append(cust, veh);
+  const link=document.createElement('input');link.type='url';link.placeholder='🔗 Paste Call Recording Link (CarWars URL)';link.value=r.callUrl||'';link.style.cssText='flex:1 1 100%;margin-top:6px';const open=document.createElement('a');open.target='_blank';open.rel='noopener';open.textContent='▶ Open Recording';open.style.cssText='display:none;align-items:center;gap:4px;margin-top:6px;color:#4FC3F7;font-size:.72rem;font-weight:700;text-decoration:none;letter-spacing:.5px';function syncOpen(){if((rows[i].callUrl||'').trim()){open.href=rows[i].callUrl.trim();open.style.display='inline-flex';}else{open.style.display='none';}}link.oninput=e=>{rows[i].callUrl=e.target.value;syncOpen();};syncOpen();det.append(cust,veh,link,open);
   const notes = document.createElement('textarea');
   notes.className = 'pop-notes';
   notes.placeholder = '📝 Notes — what went right / wrong, coaching points…';
@@ -387,7 +387,7 @@ function buildReport(){
   rows.forEach((r,i)=>{
     if(!r.result) return;
     const icon = r.result==='pass' ? '✓ PASS' : '✗ FAIL';
-    const extras = [r.customer && '👤 ' + r.customer, r.vehicle && '🚗 ' + r.vehicle, r.audio && '🎧 ' + r.audio.name].filter(Boolean);
+    const extras = [r.customer && '👤 ' + r.customer, r.vehicle && '🚗 ' + r.vehicle, r.callUrl && '🔗 ' + r.callUrl, r.audio && '🎧 ' + r.audio.name].filter(Boolean);
     lines.push(`#${i+1}  ${icon}  — ${r.person || 'Unassigned'}${extras.length ? '\n     ' + extras.join('  ·  ') : ''}${r.notes ? '\n     📝 ' + r.notes : ''}`);
   });
   const byP = {};
@@ -413,7 +413,7 @@ function copyReport(){
   });
 }
 
-for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', audio:null});
+for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null});
 render();
 </script>
 </body>
