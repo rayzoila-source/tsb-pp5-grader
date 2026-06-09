@@ -18,6 +18,7 @@
     --red:#EB0A1E;
     --green:#4ADE80;
     --blue:#38BDF8;
+    --amber:#FBBF24;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--text);font-family:'Inter',Arial,sans-serif;min-height:100vh;padding-bottom:80px}
@@ -46,12 +47,23 @@
   .date-row label{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
   input[type=date]{background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.9rem;color-scheme:dark}
 
-  .pop-row{padding:12px 0;border-bottom:1px solid var(--card-border)}
+  .pop-row{padding:14px 0;border-bottom:1px solid var(--card-border)}
   .pop-row:last-of-type{border-bottom:none}
   .pop-top{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
   .pop-num{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;color:var(--muted);white-space:nowrap;min-width:64px}
   .pop-row.graded-pass .pop-num{color:var(--green)}
   .pop-row.graded-fail .pop-num{color:var(--red)}
+
+  .row-status{font-family:'Orbitron',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.06em;white-space:nowrap}
+
+  /* checkpoint chips */
+  .cps{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .cp{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-family:'Inter',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.03em;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+  .cp:hover{border-color:var(--muted);color:var(--text)}
+  .cp .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;line-height:1}
+  .cp.on{background:rgba(74,222,128,.14);border-color:var(--green);color:var(--green)}
+  .assist-note{margin-top:7px;font-size:.7rem;color:var(--amber);font-weight:600;letter-spacing:.02em;display:none}
+  .pop-row.assist .assist-note{display:block}
 
   .pop-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
   .pop-details input{width:100%;background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.88rem}
@@ -73,15 +85,12 @@
   .salesperson-select{width:100%;background:var(--bg);color:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:.88rem;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%2364748B'/></svg>");background-repeat:no-repeat;background-position:right 12px center}
   .salesperson-select:focus{outline:none;border-color:var(--blue)}
 
-  .pf{display:flex;gap:6px}
-  .pf button{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:8px 13px;font-family:'Inter',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.05em;cursor:pointer;transition:all .15s}
-  .pf button:hover{border-color:var(--muted);color:var(--text)}
-  .pf button.pass.on{background:rgba(74,222,128,.15);border-color:var(--green);color:var(--green)}
-  .pf button.fail.on{background:rgba(235,10,30,.15);border-color:var(--red);color:var(--red)}
-
   .row-actions{display:flex;gap:10px;margin-top:14px}
   .btn-ghost{flex:1;background:transparent;border:1.5px dashed var(--line);color:var(--muted);border-radius:8px;padding:10px;font-family:'Inter',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .15s}
   .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+
+  .standard-note{font-size:.72rem;color:var(--dim);margin-top:12px;text-align:center;letter-spacing:.04em}
+  .standard-note b{color:var(--green)}
 
   .gauge-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .gauge{position:relative;width:130px;height:130px;flex-shrink:0}
@@ -97,8 +106,19 @@
   .stat.fail .v{color:var(--red)}
   .stat.total .v{color:var(--blue)}
 
+  .miss-wrap{margin-top:18px}
+  .miss-wrap .miss-ttl{font-size:.65rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:8px}
+  .miss-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .miss-row .ml{font-size:.78rem;width:120px;color:var(--muted)}
+  .miss-row .mbar{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+  .miss-row .mbar > i{display:block;height:100%;background:var(--red);border-radius:5px}
+  .miss-row .mn{font-size:.72rem;color:var(--dim);width:48px;text-align:right}
+
   .build-btn{display:block;width:100%;max-width:760px;margin:6px auto 0;background:linear-gradient(180deg,#ff1a30,var(--red));color:#fff;border:none;border-radius:12px;padding:16px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 24px rgba(235,10,30,.35);transition:transform .15s}
   .build-btn:hover{transform:translateY(-2px)}
+  .save-btn{display:block;width:100%;max-width:760px;margin:12px auto 0;background:transparent;color:var(--blue);border:1.5px solid var(--blue);border-radius:12px;padding:14px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+  .save-btn:hover{background:rgba(56,189,248,.12)}
+  .save-btn:disabled{opacity:.7;cursor:default}
 
   #report-card{display:none}
   #report-pre{background:rgba(0,0,0,.35);border:1px solid var(--card-border);border-radius:10px;padding:16px;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;line-height:1.65;white-space:pre-wrap;color:var(--text)}
@@ -110,9 +130,10 @@
   .sp-line .marks{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.2em}
 
   @media(max-width:560px){
-    .pop-top{grid-template-columns:1fr;gap:8px}
-    .pf{justify-content:flex-start}
+    .pop-top{grid-template-columns:auto 1fr;gap:8px}
+    .row-status{grid-column:1 / -1}
     .stat-grid{grid-template-columns:repeat(3,1fr)}
+    .miss-row .ml{width:96px}
   }
 </style>
 </head>
@@ -128,7 +149,7 @@
   <div class="hero">
     <img src="https://tsb.virtualautomotiv.com/images/tsb-online-logo.png" alt="TSB Online">
     <h1>Phone Pop Grader</h1>
-    <div class="sub">Mini Grader · Toyota of San Bernardino</div>
+    <div class="sub">Phone Pop 5 · Toyota of San Bernardino</div>
   </div>
 
   <!-- Date -->
@@ -146,7 +167,7 @@
   <div class="card">
     <div class="card-head">
       <span class="ttl">📞 Phone Pops</span>
-      <div class="score-pill"><span class="lab">Score</span><span class="val" id="score-display">— / 5</span></div>
+      <div class="score-pill"><span class="lab">Passed</span><span class="val" id="score-display">— / 0</span></div>
     </div>
     <div class="card-body">
       <div id="pop-rows"></div>
@@ -154,6 +175,7 @@
         <button class="btn-ghost" onclick="addRow()">＋ Add Phone Pop</button>
         <button class="btn-ghost" onclick="resetAll()">↺ Reset</button>
       </div>
+      <div class="standard-note">Each call is graded on 5 checkpoints. <b>4 of 5 = PASS.</b> No appointment = Manager Assist.</div>
     </div>
   </div>
 
@@ -176,6 +198,7 @@
           <div class="stat total"><div class="v" id="stat-total">0</div><div class="k">Graded</div></div>
         </div>
       </div>
+      <div class="miss-wrap" id="miss-wrap"></div>
       <div id="by-person" style="margin-top:18px"></div>
     </div>
   </div>
@@ -190,37 +213,67 @@
   </div>
 
   <button class="build-btn" onclick="buildReport()">🏁 Build Phone Pop Report</button>
+  <button class="save-btn" id="save-btn" onclick="saveToAirtable()">💾 Save to Airtable</button>
 
 </div>
 
 <script>
 const ROSTER = ["Alex Enriquez","Alex Hernandez","Alexis Rojas","Allan Valladares","Alma Macias","Andrew Zuniga","Anthony Woods","Beatrice Garcia","Briana Galvan","Brianna Uruza","Brittney Sanchez","Carmen Montano","Charity Maldonado","Christopher Ortega","Christy Lesko","Citlaly Valencia","Cynthia Ramirez","Diana Valencia","Diego Ramirez Jr","Don Rhodes","Eduardo Somoza","Emily Murguia","Francisco Valencia","Frankie Macias","Gerald Tillis","Irvin Solis","Isaac Garcia","Issa Tafish","Jaime Godoy","Jaime Pereda-ojeda","Jerry Solis","Jesus Guerrero","Joel Chavez","Johana Viramontes","Jorge Escalante Pina","Joseph Rojas","Juan Rubiano","Karina Villarreal","Kaylee Ellis","Kevin Pham","Liz Enright","Luis Padilla","Marcos Alonzo","Maritza Madera","Marla Green","Martin Reyes","Maximiliano Vilarino","Maximo Adan Cruz","Melanie Romero","Melissa Aragon","Melody Hidalgo","Michael Cummings","Miguel Espino","Miguel Reyes","Mimi Zoila","Nabeel Ahmed","Nadia Sabir","Nancy Gildo","Natalie Ramos","Neysa Medina","Pat Boos","Rabi Barakzai","Raul Salcedo","Ray Zoila","Ricardo Ramirez","Ronald Guerrero","Roxana Gomes","Ryan Dimaria","Santa Ramirez","Sara Grinnan","Stacy Ferrusquiashider","Timothy Timmsen","Tuan Lam","Vivian Guerrero","William Paek","Yadira Jimenez"];
 
-let rows = []; // {result: 'pass'|'fail'|null, person: '', audio: {url,name}|null}
+// The 5 Phone Pop checkpoints. 4 of 5 = PASS.
+const CHECKPOINTS = [
+  {k:'name',  label:'Name Game'},
+  {k:'sell',  label:'Sell TSB'},
+  {k:'trade', label:'Trade Talk'},
+  {k:'appt',  label:'Appointment'},
+  {k:'pay',   label:'Payment'}
+];
+const PASS_THRESHOLD = 4;
+
+let rows = []; // {checks:{name,sell,trade,appt,pay}, person, customer, vehicle, notes, callUrl, audio}
 const CIRC = 351.86;
+
+function newRow(){ return {checks:{name:false,sell:false,trade:false,appt:false,pay:false}, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null}; }
+function passedCount(r){ return CHECKPOINTS.filter(c=>r.checks[c.k]).length; }
+function isGraded(r){ return !!r.person; }            // a call counts once a salesperson is assigned
+function isPass(r){ return passedCount(r) >= PASS_THRESHOLD; }
 
 document.getElementById('grade-date').valueAsDate = new Date();
 
 function addRow(){
-  rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null});
+  rows.push(newRow());
   const host = document.getElementById('pop-rows');
   host.appendChild(makeRow(rows.length-1));
   refreshStats();
 }
 
-function setResult(i, val){
-  rows[i].result = (rows[i].result === val) ? null : val;
-  // update in place so a playing call isn't interrupted
-  const row = document.getElementById('pop-rows').children[i];
-  row.className = 'pop-row' + (rows[i].result==='pass'?' graded-pass':rows[i].result==='fail'?' graded-fail':'');
-  row.querySelector('.pass').classList.toggle('on', rows[i].result==='pass');
-  row.querySelector('.fail').classList.toggle('on', rows[i].result==='fail');
+function setPerson(i, name){ rows[i].person = name; updateRowVisual(i); refreshStats(); }
+
+function toggleCheck(i, k){
+  rows[i].checks[k] = !rows[i].checks[k];
+  updateRowVisual(i);
   refreshStats();
 }
 
-function setPerson(i, name){
-  rows[i].person = name;
-  refreshStats();
+function updateRowVisual(i){
+  const row = document.getElementById('pop-rows').children[i];
+  if(!row) return;
+  const graded = isGraded(rows[i]);
+  const pass = isPass(rows[i]);
+  const cnt = passedCount(rows[i]);
+  row.className = 'pop-row' + (graded ? (pass?' graded-pass':' graded-fail') : '') + ((graded && !rows[i].checks.appt) ? ' assist' : '');
+  CHECKPOINTS.forEach(c=>{
+    const chip = row.querySelector('.cp[data-k="'+c.k+'"]');
+    if(chip){
+      chip.classList.toggle('on', rows[i].checks[c.k]);
+      chip.querySelector('.dot').textContent = rows[i].checks[c.k] ? '✓' : '';
+    }
+  });
+  const st = row.querySelector('.row-status');
+  if(st){
+    if(!graded){ st.textContent=''; }
+    else { st.textContent = cnt+'/5 · '+(pass?'PASS':'FAIL'); st.style.color = pass ? 'var(--green)' : 'var(--red)'; }
+  }
 }
 
 function setAudio(i, file){
@@ -280,7 +333,7 @@ function resetAll(){
   if(!confirm('Reset all phone pops?')) return;
   rows.forEach(r=>{ if(r.audio) URL.revokeObjectURL(r.audio.url); });
   rows = [];
-  for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null});
+  for(let i=0;i<5;i++) rows.push(newRow());
   document.getElementById('report-card').style.display='none';
   render();
 }
@@ -288,7 +341,8 @@ function resetAll(){
 function makeRow(i){
   const r = rows[i];
   const div = document.createElement('div');
-  div.className = 'pop-row' + (r.result==='pass'?' graded-pass':r.result==='fail'?' graded-fail':'');
+  div.className = 'pop-row';
+
   const top = document.createElement('div');
   top.className = 'pop-top';
   const num = document.createElement('div');
@@ -297,14 +351,26 @@ function makeRow(i){
   sel.className='salesperson-select';
   sel.innerHTML = '<option value="">— Select Salesperson —</option>' + ROSTER.map(n=>`<option${n===r.person?' selected':''}>${n}</option>`).join('');
   sel.onchange = e=>setPerson(i, e.target.value);
-  const pf = document.createElement('div');
-  pf.className='pf';
-  const bp = document.createElement('button');
-  bp.className='pass'+(r.result==='pass'?' on':''); bp.textContent='✓ PASS'; bp.onclick=()=>setResult(i,'pass');
-  const bf = document.createElement('button');
-  bf.className='fail'+(r.result==='fail'?' on':''); bf.textContent='✗ FAIL'; bf.onclick=()=>setResult(i,'fail');
-  pf.append(bp,bf);
-  top.append(num, sel, pf);
+  const st = document.createElement('div');
+  st.className='row-status';
+  top.append(num, sel, st);
+
+  // checkpoint chips
+  const cps = document.createElement('div');
+  cps.className = 'cps';
+  CHECKPOINTS.forEach(c=>{
+    const b = document.createElement('button');
+    b.className = 'cp' + (r.checks[c.k]?' on':'');
+    b.setAttribute('data-k', c.k);
+    b.innerHTML = '<span class="dot">'+(r.checks[c.k]?'✓':'')+'</span>'+c.label;
+    b.onclick = ()=>toggleCheck(i, c.k);
+    cps.appendChild(b);
+  });
+
+  const assist = document.createElement('div');
+  assist.className = 'assist-note';
+  assist.textContent = '⚠ No appointment set — Manager Assist required';
+
   const det = document.createElement('div');
   det.className = 'pop-details';
   const cust = document.createElement('input');
@@ -313,14 +379,25 @@ function makeRow(i){
   const veh = document.createElement('input');
   veh.type='text'; veh.placeholder='Vehicle (Year / Model)'; veh.value=r.vehicle||'';
   veh.oninput = e=>{rows[i].vehicle = e.target.value;};
-  const link=document.createElement('input');link.type='url';link.placeholder='🔗 Paste Call Recording Link (CarWars URL)';link.value=r.callUrl||'';link.style.cssText='flex:1 1 100%;margin-top:6px';const open=document.createElement('a');open.target='_blank';open.rel='noopener';open.textContent='▶ Open Recording';open.style.cssText='display:none;align-items:center;gap:4px;margin-top:6px;color:#4FC3F7;font-size:.72rem;font-weight:700;text-decoration:none;letter-spacing:.5px';function syncOpen(){if((rows[i].callUrl||'').trim()){open.href=rows[i].callUrl.trim();open.style.display='inline-flex';}else{open.style.display='none';}}link.oninput=e=>{rows[i].callUrl=e.target.value;syncOpen();};syncOpen();det.append(cust,veh,link,open);
+  const link=document.createElement('input');
+  link.type='url'; link.placeholder='🔗 Paste Call Recording Link (CarWars URL)'; link.value=r.callUrl||'';
+  link.style.cssText='flex:1 1 100%;margin-top:6px';
+  const open=document.createElement('a');
+  open.target='_blank'; open.rel='noopener'; open.textContent='▶ Open Recording';
+  open.style.cssText='display:none;align-items:center;gap:4px;margin-top:6px;color:#4FC3F7;font-size:.72rem;font-weight:700;text-decoration:none;letter-spacing:.5px';
+  function syncOpen(){ if((rows[i].callUrl||'').trim()){ open.href=rows[i].callUrl.trim(); open.style.display='inline-flex'; } else { open.style.display='none'; } }
+  link.oninput=e=>{ rows[i].callUrl=e.target.value; syncOpen(); };
+  syncOpen();
+  det.append(cust, veh, link, open);
+
   const notes = document.createElement('textarea');
   notes.className = 'pop-notes';
   notes.placeholder = '📝 Notes — what went right / wrong, coaching points…';
   notes.rows = 1;
   notes.value = r.notes||'';
   notes.oninput = e=>{rows[i].notes = e.target.value;};
-  div.append(top, det, notes, makeAudioEl(i));
+
+  div.append(top, cps, assist, det, notes, makeAudioEl(i));
   return div;
 }
 
@@ -328,17 +405,18 @@ function render(){
   const host = document.getElementById('pop-rows');
   host.innerHTML = '';
   rows.forEach((r,i)=>host.appendChild(makeRow(i)));
+  rows.forEach((r,i)=>updateRowVisual(i));
   refreshStats();
 }
 
 function refreshStats(){
-  const graded = rows.filter(r=>r.result);
-  const pass = graded.filter(r=>r.result==='pass').length;
+  const graded = rows.filter(isGraded);
+  const pass = graded.filter(isPass).length;
   const fail = graded.length - pass;
   document.getElementById('stat-pass').textContent = pass;
   document.getElementById('stat-fail').textContent = fail;
   document.getElementById('stat-total').textContent = graded.length;
-  document.getElementById('score-display').textContent = (graded.length? pass : '—') + ' / ' + rows.length;
+  document.getElementById('score-display').textContent = (graded.length? pass : '—') + ' / ' + graded.length;
 
   const pct = graded.length ? Math.round(pass/graded.length*100) : null;
   const arc = document.getElementById('gauge-arc');
@@ -352,12 +430,23 @@ function refreshStats(){
     lbl.style.color = col;
   }
 
+  // most-missed checkpoint coaching bars
+  const miss = document.getElementById('miss-wrap');
+  if(graded.length){
+    const counts = CHECKPOINTS.map(c=>({label:c.label, missed: graded.filter(r=>!r.checks[c.k]).length}));
+    const max = graded.length;
+    miss.innerHTML = '<div class="miss-ttl">Most-missed checkpoints</div>' + counts.map(c=>{
+      const w = max ? Math.round(c.missed/max*100) : 0;
+      return `<div class="miss-row"><span class="ml">${c.label}</span><span class="mbar"><i style="width:${w}%"></i></span><span class="mn">${c.missed}/${max}</span></div>`;
+    }).join('');
+  } else { miss.innerHTML=''; }
+
   // per-salesperson breakdown
   const byP = {};
   rows.forEach(r=>{
-    if(!r.result || !r.person) return;
+    if(!isGraded(r)) return;
     byP[r.person] = byP[r.person] || {pass:0,fail:0};
-    byP[r.person][r.result]++;
+    isPass(r) ? byP[r.person].pass++ : byP[r.person].fail++;
   });
   const host = document.getElementById('by-person');
   const names = Object.keys(byP).sort((a,b)=> (byP[b].pass-byP[b].fail) - (byP[a].pass-byP[a].fail));
@@ -372,33 +461,40 @@ function refreshStats(){
 }
 
 function buildReport(){
-  const graded = rows.filter(r=>r.result);
-  const pass = graded.filter(r=>r.result==='pass').length;
+  const graded = rows.filter(isGraded);
+  const pass = graded.filter(isPass).length;
   const pct = graded.length ? Math.round(pass/graded.length*100) : 0;
   const d = document.getElementById('grade-date').value || new Date().toISOString().slice(0,10);
   const dateStr = new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
   let lines = [];
-  lines.push('📞 PHONE POP GRADER — TOYOTA OF SAN BERNARDINO');
+  lines.push('📞 PHONE POP 5 GRADER — TOYOTA OF SAN BERNARDINO');
   lines.push('📅 ' + dateStr);
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  lines.push(`SCORE: ${pass} / ${graded.length} graded  (${pct}% pass rate)`);
+  lines.push(`SCORE: ${pass} / ${graded.length} calls passed  (${pct}% · standard 4 of 5)`);
   lines.push('');
   rows.forEach((r,i)=>{
-    if(!r.result) return;
-    const icon = r.result==='pass' ? '✓ PASS' : '✗ FAIL';
+    if(!isGraded(r)) return;
+    const cnt = passedCount(r);
+    const icon = isPass(r) ? '✓ PASS' : '✗ FAIL';
+    const cpStr = CHECKPOINTS.map(c=> (r.checks[c.k]?'✓':'✗')+c.label).join('  ');
     const extras = [r.customer && '👤 ' + r.customer, r.vehicle && '🚗 ' + r.vehicle, r.callUrl && '🔗 ' + r.callUrl, r.audio && '🎧 ' + r.audio.name].filter(Boolean);
-    lines.push(`#${i+1}  ${icon}  — ${r.person || 'Unassigned'}${extras.length ? '\n     ' + extras.join('  ·  ') : ''}${r.notes ? '\n     📝 ' + r.notes : ''}`);
+    let block = `#${i+1}  ${icon} (${cnt}/5)  — ${r.person}`;
+    block += '\n     ' + cpStr;
+    if(!r.checks.appt) block += '\n     ⚠ No appointment — Manager Assist';
+    if(extras.length) block += '\n     ' + extras.join('  ·  ');
+    if(r.notes) block += '\n     📝 ' + r.notes;
+    lines.push(block);
   });
   const byP = {};
-  rows.forEach(r=>{ if(r.result && r.person){ byP[r.person]=byP[r.person]||{p:0,f:0}; r.result==='pass'?byP[r.person].p++:byP[r.person].f++; } });
+  rows.forEach(r=>{ if(isGraded(r)){ byP[r.person]=byP[r.person]||{p:0,f:0}; isPass(r)?byP[r.person].p++:byP[r.person].f++; } });
   if(Object.keys(byP).length){
     lines.push('');
     lines.push('BY SALESPERSON:');
     Object.keys(byP).sort().forEach(n=>lines.push(`  ${n}: ${byP[n].p} pass / ${byP[n].f} fail`));
   }
   lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  lines.push(pct>=80 ? '🏆 Strong phone performance — keep it rolling!' : pct>=50 ? '📈 Room to grow — review missed calls.' : '🔧 Coaching opportunity — schedule call reviews.');
+  lines.push(pct>=80 ? '🏆 Strong phone performance — keep it rolling!' : pct>=50 ? '📈 Room to grow — review missed checkpoints.' : '🔧 Coaching opportunity — schedule call reviews.');
 
   document.getElementById('report-pre').textContent = lines.join('\n');
   document.getElementById('report-card').style.display='block';
@@ -413,7 +509,45 @@ function copyReport(){
   });
 }
 
-for(let i=0;i<5;i++) rows.push({result:null, person:'', customer:'', vehicle:'', notes:'', callUrl:'', audio:null});
+async function saveToAirtable(){
+  const graded = rows.filter(isGraded);
+  const btn = document.getElementById('save-btn');
+  if(!graded.length){ alert('Assign a salesperson to at least one call before saving.'); return; }
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ Saving…';
+  const payload = {
+    date: document.getElementById('grade-date').value || new Date().toISOString().slice(0,10),
+    store: 'Toyota of San Bernardino',
+    calls: graded.map(r=>({
+      person:   r.person,
+      customer: r.customer,
+      vehicle:  r.vehicle,
+      callUrl:  r.callUrl,
+      notes:    r.notes,
+      checkpoints: {
+        nameGame:         r.checks.name,
+        sellTsb:          r.checks.sell,
+        tradeTalk:        r.checks.trade,
+        appointmentAsk:   r.checks.appt,
+        paymentDirection: r.checks.pay
+      }
+    }))
+  };
+  try{
+    const res = await fetch('/.netlify/functions/save-grades', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
+    btn.textContent = '✓ Saved '+(data.saved||graded.length)+' to Airtable';
+    setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; }, 2800);
+  }catch(e){
+    btn.textContent = '⚠ '+ (e.message||'Save failed');
+    setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; }, 4000);
+  }
+}
+
+for(let i=0;i<5;i++) rows.push(newRow());
 render();
 </script>
 </body>
